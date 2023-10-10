@@ -18,17 +18,54 @@ namespace API_task.Employee_task
         public JObject obj = new JObject();
 
 
-        public JObject Process_response(long National_number)
-        {
-            
-            var employee_inforamtion = Get_employee_info(National_number);
-            var Is_Active = Check_activity(employee_inforamtion);
+        //public JObject Process_response(long National_number)
+        //{
 
-            if (employee_inforamtion.national_number > 0)
+        //    var employee_inforamtion = Get_employee_info(National_number);
+        //    var Is_Active = Check_activity(employee_inforamtion);
+
+        //    if (employee_inforamtion.national_number > 0)
+        //    {
+        //        if (Is_Active)
+        //        {
+        //            final(employee_inforamtion.ID);
+        //            return obj;
+        //        }
+        //        else
+        //        {
+        //            obj["status"] = "This employee is not active";
+        //            return obj;
+        //        }
+
+        //    }
+
+        //    else
+        //    {
+        //        JObject obj_message = new JObject();
+        //        obj_message["message"] = "the national number is not exist";
+        //        return obj_message;
+        //    }
+
+        //}
+
+        public JObject Process_response(string National_number)
+        {
+            long parsedNationalNumber;
+            if (!long.TryParse(National_number, out parsedNationalNumber))
+            {
+                JObject obj_message = new JObject();
+                obj_message["message"] = "Invalid national number format. It should be a numeric value.";
+                return obj_message;
+            }
+
+            var employee_information = Get_employee_info(parsedNationalNumber);
+            var Is_Active = Check_activity(employee_information);
+
+            if (employee_information.national_number > 0)
             {
                 if (Is_Active)
                 {
-                    final(employee_inforamtion.ID);
+                    final(employee_information.ID);
                     return obj;
                 }
                 else
@@ -36,17 +73,14 @@ namespace API_task.Employee_task
                     obj["status"] = "This employee is not active";
                     return obj;
                 }
-
             }
             else
             {
                 JObject obj_message = new JObject();
-                obj_message["message"] = "the national number is not exist";
+                obj_message["message"] = "The national number is not exist";
                 return obj_message;
             }
-            
         }
-
 
         //done
         public bool Check_activity(EmpInfo employee)
@@ -100,7 +134,7 @@ namespace API_task.Employee_task
             }
             else
             {
-                for (var i = 0; i < Salaries.Count() - 1; i++)
+                for (var i = 0; i < Salaries.Count(); i++)
                 {
                     if (Salaries[i] > highest)
                         highest = Salaries[i];
